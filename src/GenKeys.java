@@ -26,8 +26,10 @@ public class GenKeys {
         genPrivateKey();
     }
     public static void genParams(){
-        param.p = BigInteger.probablePrime(param.SECURITY_PARAM, param.RANDOM);
-        param.q = BigInteger.probablePrime(param.SECURITY_PARAM, param.RANDOM);
+
+        //TODO : TEST DE PRIMALITE A VERIFIER PAR LA SUITE 
+        param.p = BigInteger.probablePrime((param.SECURITY_PARAM)/2, param.RANDOM);
+        param.q = BigInteger.probablePrime((param.SECURITY_PARAM)/2, param.RANDOM);
         param.N = param.p.multiply(param.q);
         param.PHI = (param.p.subtract(BigInteger.ONE).multiply(param.q.subtract(BigInteger.ONE)));
          
