@@ -1,4 +1,4 @@
-package src;
+package src.Rsa;
 import java.math.BigInteger;
 import java.security.SecureRandom;
 import java.security.Signature;
@@ -6,20 +6,11 @@ import java.security.Signature;
 public class GenKeys {
 
     //ETAPE 1 : calcul clés publiques/privées
-    /*public SecureRandom RANDOM = new SecureRandom();
-    public int SECURITY_PARAM;
-    public RSAPublicKey publicKey;
-    public RSAPrivateKey privateKey;
-    public BigInteger p;
-    public BigInteger q;
-    public BigInteger d;
-    public BigInteger e;
-    public BigInteger PHI;
-    public BigInteger N;*/
-    public static Params param = new Params();
+
+    public static Params param;
 
     public GenKeys(int SECURITY_PARAM){
-        //this.SECURITY_PARAM = SECURITY_PARAM;
+        param = new Params();
         param.SECURITY_PARAM = SECURITY_PARAM;
         genParams();
         genPublicKey();
@@ -55,10 +46,6 @@ public class GenKeys {
 
     //ETAPE 2 : chiffrement par rapport à une clé publique donnée
 
-    public String chiffrement(String messageClair){
-        return this.chiffrement(new BigInteger(messageClair)).toString();
-    }
-
     public BigInteger chiffrement(BigInteger messageClair){
         return messageClair.modPow(param.e, param.N);
     }
@@ -66,9 +53,6 @@ public class GenKeys {
     //ETAPE 3 : déchiffrement par rapport à une clé secrète donnée
     public BigInteger dechiffrement(BigInteger messageChiffre){
         return messageChiffre.modPow(param.d, param.N);
-    }
-    public String dechiffrement(String messageChiffre){
-        return this.dechiffrement(new BigInteger(messageChiffre)).toString();
     }
 
 }

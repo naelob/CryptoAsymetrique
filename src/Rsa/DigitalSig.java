@@ -1,13 +1,18 @@
-package src;
+package src.Rsa;
 
 import java.math.BigInteger;
+import java.nio.charset.Charset;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-public class SignAndVerify {
+public class DigitalSig {
     //Params paramS = new Params();
     public RSAPublicKey pK;
     public BigInteger pKN;
+
+    public DigitalSig(){
+
+    }
 
     private static String bytesToHex(byte[] hash) {
         StringBuilder hexString = new StringBuilder(2 * hash.length);
@@ -20,8 +25,8 @@ public class SignAndVerify {
         }
         return hexString.toString();
     }
-
-    public BigInteger signature(String messageASigner) throws NoSuchAlgorithmException{
+    
+    public BigInteger signature(byte[] messageASigner) throws NoSuchAlgorithmException{
         final GenKeys keys = new GenKeys(1024);
         pK = keys.getPublicKey();
         pKN  = pK.getN();
@@ -29,19 +34,23 @@ public class SignAndVerify {
         BigInteger privateKD = pvK.getD(); 
         //appliquer une fonction de hashage au message messageASigner
         MessageDigest md = MessageDigest.getInstance("SHA-256");
-        byte[] hashMessage = md.digest(messageASigner.getBytes(StandardCharsets.UTF_8));
+        byte[] hashMessage = md.digest(messageASigner);
         String hashedString = bytesToHex(hashMessage);
-        return (new BigInteger(hashedString)).modPow(privateKD,pKN);
+
+        //pronleme NumberFormatException
+        System.out.println(hashedString);
+        return new BigInteger(hashedString).modPow(privateKD,pKN);
     }
     
-    public boolean verification(BigInteger messageASigner,BigInteger signatureRecue){
+    public boolean verification(byte[] messageASigner,BigInteger signatureRecue) throws NoSuchAlgorithmException{
         //String signed = signatureRecue.toString();
         BigInteger e = pK.getE();
         BigInteger hashSignatureRecue = signatureRecue.modPow(e, pKN);
         MessageDigest md = MessageDigest.getInstance("SHA-256");
-        byte[] hashMessage = md.digest(messageASigner.getBytes(StandardCharsets.UTF_8));
+        //byte[] hashMessage = md.digest(messageASigner.getBytes(Charset.forName("UTF-8")));
+        byte[] hashMessage = md.digest(messageASigner);
         String hashedString = bytesToHex(hashMessage);
-        return (new BigInteger(hashedString))==hashSignatureRecue;
+        return (new BigInteger(hashedString)).equals(hashSignatureRecue);
 
     }
 }
