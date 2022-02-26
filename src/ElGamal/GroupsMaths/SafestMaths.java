@@ -1,7 +1,10 @@
 package src.ElGamal.GroupsMaths;
 
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Random;
+
 
 public class SafestMaths {
 
@@ -127,5 +130,51 @@ public class SafestMaths {
  
         // If no primitive root found
         return BigInteger.valueOf(0);
+    }
+    public static int gcd(int a, int b){
+        if(a < b){
+            return gcd(b,a);
+        }else if(a % b == 0) {
+            return b;
+        }else{
+            return gcd(b,a % b);
+        }
+    }
+    public static BigInteger randomBigInteger(BigInteger n) {
+        Random rnd = new Random();
+        int maxNumBitLength = n.bitLength();
+        BigInteger aRandomBigInt;
+        do {
+            aRandomBigInt = new BigInteger(maxNumBitLength, rnd);
+            // compare random number lessthan ginven number
+        } while (aRandomBigInt.compareTo(n) > 0); 
+        return aRandomBigInt;
+    }
+    
+    //@getXFromGroup to get an x element such that gcd(a,p)=1
+    public static BigInteger getXFromGroup(BigInteger p){
+        Random rand = new Random();
+        int k = rand.nextInt(p.intValue() - (10^20)) + (10^20); // we dont check if p.intValue() is negative or not
+        while(gcd(p.intValue(),k) != 1) {
+            k = rand.nextInt(p.intValue() - (10^20)) + (10^20);
+        }
+        return BigInteger.valueOf(k);
+    }
+
+    
+    public static BigInteger getPrimRoot(BigInteger p) {
+        ArrayList<BigInteger> fact = new ArrayList<BigInteger>();
+        BigInteger phi = p.subtract(BigInteger.ONE);
+        fact.add(BigInteger.valueOf(2));
+        fact.add(p.divide(BigInteger.valueOf(2)));
+        for (BigInteger res = BigInteger.valueOf(2); res.compareTo(p) <= 0; res = res.add(BigInteger.ONE)) {
+            boolean ok = true;
+            for (int i = 0; i < fact.size() && ok; ++i) {
+                BigInteger b = res.modPow(phi.divide(fact.get(i)), p);
+                ok = (b.compareTo(BigInteger.ONE) != 0);
+            }
+            if (ok) return res;
+        }
+        return null;
     }
 }

@@ -23,12 +23,16 @@ public class Main {
         BigInteger msgDechiffre = keyPair.dechiffrement(msgChiffre);
         System.out.println("Message dechiffré : " + msgDechiffre );
 
+        
         DigitalSig sv = new DigitalSig();
         BigInteger sig;
         boolean b;
-        sig = sv.signature(msgChiffre.toByteArray()); // erreur dans signature
+        sig = sv.signature(msgChiffre.toByteArray(),keyPair.getPrivateKey(),keyPair.getPublicKey());
         System.out.println("Signature generée : " + sig);
-        b = sv.verification(msgChiffre.toByteArray(), sig);
+
+        sig = sig.add(new BigInteger("32"));
+        
+        b = sv.verification(msgChiffre.toByteArray(), sig, keyPair.getPublicKey());
         if(b){
             System.out.println("Signature correcte !");
         }else{
