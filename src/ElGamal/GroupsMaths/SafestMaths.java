@@ -8,6 +8,46 @@ import java.util.Random;
 
 public class SafestMaths {
 
+    static BigInteger ZERO = BigInteger.ZERO;
+    static BigInteger ONE = BigInteger.ONE;
+    static BigInteger TWO = BigInteger.TWO;
+
+    public static BigInteger fastExponential(BigInteger base, BigInteger exponent, BigInteger module){
+		if (exponent.equals(ZERO)) return ONE;
+		BigInteger res = ONE;
+		base = base.mod(module);
+		while (exponent.compareTo(ZERO) > 0){
+			if (exponent.mod(TWO).equals(ONE)){
+				res = res.multiply(base);
+				res = res.mod(module);
+			}
+			base = base.multiply(base);
+			base = base.mod(module);
+			exponent = exponent.divide(TWO);
+		} 
+		return res;
+	}
+	
+	public static boolean fermatTest(BigInteger number){
+		if (number.compareTo(ONE) <= 0) return false;
+		if (number.equals(TWO)) return true;
+		if (number.mod(TWO).equals(ZERO)) return false;
+		BigInteger exponent = number.subtract(ONE);
+		BigInteger base, remainder;
+		for (int i = 0; i < 100; i++){
+			base = randomBigInteger(number);
+			remainder = fastExponential(base, exponent, number);
+			if (remainder.compareTo(ONE) != 0) return false;
+		}
+		return true;
+	}
+    public static BigInteger confirmPrime(int SECURITY, Random rand){
+        BigInteger p = new BigInteger("6");
+        while(!fermatTest(p)) 
+            p = BigInteger.probablePrime(SECURITY,rand);
+        return p;
+    }
+
     public static boolean isPrime(int n)
     {
         // Corner cases
@@ -140,6 +180,15 @@ public class SafestMaths {
             return gcd(b,a % b);
         }
     }
+    public static BigInteger gcdBG(BigInteger a, BigInteger b) {
+        BigInteger t;
+        while (!b.equals(BigInteger.ZERO)) {
+            t = a;
+            a = b;
+            b = t.remainder(b);
+        }
+        return a;
+    }
     public static BigInteger randomBigInteger(BigInteger n) {
         Random rnd = new Random();
         int maxNumBitLength = n.bitLength();
@@ -150,7 +199,20 @@ public class SafestMaths {
         } while (aRandomBigInt.compareTo(n) > 0); 
         return aRandomBigInt;
     }
-    
+    public static BigInteger randomBigIntegerBorn(BigInteger lower, BigInteger upper){
+        //BigInteger upper = new BigInteger("5000000000000");
+        //BigInteger lower = new BigInteger("25000000000");
+        BigInteger bigInteger = upper.subtract(lower);
+        Random randNum = new Random();
+        int len = upper.bitLength();
+        BigInteger res = new BigInteger(len, randNum);
+        if (res.compareTo(lower) < 0)
+            res = res.add(lower);
+        if (res.compareTo(bigInteger) >= 0)
+            res = res.mod(bigInteger).add(lower);
+            //System.out.println("The random BigInteger = "+res);
+        return res;
+    }
     //@getXFromGroup to get an x element such that gcd(a,p)=1
     public static BigInteger getXFromGroup(BigInteger p){
         Random rand = new Random();
@@ -161,7 +223,6 @@ public class SafestMaths {
         return BigInteger.valueOf(k);
     }
 
-    
     public static BigInteger getPrimRoot(BigInteger p) {
         ArrayList<BigInteger> fact = new ArrayList<BigInteger>();
         BigInteger phi = p.subtract(BigInteger.ONE);

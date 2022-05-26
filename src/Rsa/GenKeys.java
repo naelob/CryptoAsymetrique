@@ -3,6 +3,8 @@ import java.math.BigInteger;
 import java.security.SecureRandom;
 import java.security.Signature;
 
+import src.ElGamal.GroupsMaths.SafestMaths;
+
 public class GenKeys {
 
     //ETAPE 1 : calcul clés publiques/privées
@@ -18,16 +20,16 @@ public class GenKeys {
     }
     public static void genParams(){
 
-        //TODO : TEST DE PRIMALITE A VERIFIER PAR LA SUITE 
-        param.p = BigInteger.probablePrime((param.SECURITY_PARAM)/2, param.RANDOM);
-        param.q = BigInteger.probablePrime((param.SECURITY_PARAM)/2, param.RANDOM);
+        param.p = SafestMaths.confirmPrime(param.SECURITY_PARAM/2,param.RANDOM); //BigInteger.probablePrime((param.SECURITY_PARAM)/2, param.RANDOM);
+        param.q = SafestMaths.confirmPrime(param.SECURITY_PARAM/2,param.RANDOM); //BigInteger.probablePrime((param.SECURITY_PARAM)/2, param.RANDOM);
+
         param.N = param.p.multiply(param.q);
         param.PHI = (param.p.subtract(BigInteger.ONE).multiply(param.q.subtract(BigInteger.ONE)));
          
         //cherchons un nombre d tel que ed soit congru à 1 modulo PHI(N) 
         //avec e un nombre choisi dans (Z/PHI(N)Z)*
 
-        param.e = new BigInteger("65537");
+        param.e = new BigInteger("65537"); // todo
         param.d = param.e.modInverse(param.PHI);
     }
     public static void genPublicKey(){

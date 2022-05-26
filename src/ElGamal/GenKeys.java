@@ -20,7 +20,7 @@ public class GenKeys {
     public static void genParams(){
         Random rand = new Random();
 
-        param.p = BigInteger.probablePrime((param.SECURITY_PARAM)/2, param.RANDOM);
+        param.p = SafestMaths.confirmPrime(param.SECURITY_PARAM/2,param.RANDOM);//BigInteger.probablePrime((param.SECURITY_PARAM)/2, param.RANDOM);
         //param.g = BigInteger.valueOf(RAND2.nextInt(param.p.intValue() - 2) + 2); // we dont check if p.intValue() is negative or not
         //param.x = SafestMaths.getXFromGroup(param.p); // we dont check if p.intValue() is negative or not
         param.g = SafestMaths.getPrimRoot(param.p);

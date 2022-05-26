@@ -15,9 +15,7 @@ public class DigitalSig {
     }
     
     public BigInteger signature(byte[] messageASigner, RSAPrivateKey privateKey, RSAPublicKey publicKey) throws NoSuchAlgorithmException{
-        //final GenKeys keys = new GenKeys(1024);
-        //pKN  = pK.getN();
-        //RSAPrivateKey pvK = keys.getPrivateKey();
+
         BigInteger publicN = publicKey.getN();
         BigInteger privateD = privateKey.getD(); 
 
@@ -25,7 +23,7 @@ public class DigitalSig {
         MessageDigest md = MessageDigest.getInstance("SHA-256");
         md.update(messageASigner, 0, messageASigner.length);
         BigInteger bi = new BigInteger(1,md.digest());
-        System.out.println(bi.toString(16));
+        //System.out.println(bi.toString(16));
 
         return bi.modPow(privateD,publicN);
     }
@@ -37,7 +35,7 @@ public class DigitalSig {
         MessageDigest md = MessageDigest.getInstance("SHA-256");
         md.update(messageASigner, 0, messageASigner.length);
         BigInteger bi = new BigInteger(1,md.digest());
-        System.out.println(bi.toString(16));
+        //System.out.println(bi.toString(16));
         return bi.equals(hashSignatureRecue);
 
     }

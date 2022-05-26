@@ -1,15 +1,16 @@
 package src.ElGamal;
 
 import java.io.FileNotFoundException;
+import java.io.ObjectInputStream.GetField;
 import java.math.BigInteger;
 import java.security.NoSuchAlgorithmException;
 
 public class Main {
     
-    public static void main(String[] args) throws FileNotFoundException {
+    public static void main(String[] args) throws FileNotFoundException, NoSuchAlgorithmException {
         GenKeys keyPair = new GenKeys(1024);
 
-        String a = Fichier.getContentFichier("/Users/nael/Desktop/PROJET MATH_INFO/exemples/text2.txt");
+        String a = Fichier.getContentFichier("/Users/nael/Desktop/CryptoAsymetrique/exemples/text2.txt");
         byte[] By = Fichier.stringToBytesArray(a);
         String s = new String(By);
         BigInteger mesg = new BigInteger(By);
@@ -25,6 +26,30 @@ public class Main {
         BigInteger msgDechiffre = keyPair.dechiffrement(chiffrementMesg,keyPair.getPrivateKey().getX(),keyPair.getPrivateKey().getP());
         System.out.println("Message dechiffré : " + msgDechiffre );
         System.out.println("Message dechiffré : " + new String(msgDechiffre.toByteArray()));
+
+        DigitalSig dg = new DigitalSig(1024);
+        BigInteger[] params = dg.getParams();
+        BigInteger p = params[0];
+        BigInteger g = params[1];
+        BigInteger x = params[2];
+        System.out.println("p : "+p);
+        System.out.println("g : "+g);
+        System.out.println("x : "+x);
+
+
+        BigInteger[] signature = dg.sign(By, p, g, x);
+        System.out.println("r is "+signature[0]);
+        System.out.println("s is "+signature[1]);
+        BigInteger y = g.modPow(x, p);
+
+        signature[0] = new BigInteger("5566678434343434436899976554322125");
+        boolean isGood = dg.verify(p, g, y, signature, By);
+        if(isGood){
+            System.out.println("la signature est correcte");
+        }else{
+            System.out.println("la signature est pas correcte");
+        }
+
 
 
     }

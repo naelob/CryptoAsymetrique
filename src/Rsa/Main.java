@@ -8,7 +8,7 @@ public class Main {
     
     public static void main(String[] args) throws FileNotFoundException,NoSuchAlgorithmException{
         GenKeys keyPair = new GenKeys(1024);
-        String a = Fichier.getContentFichier("/Users/nael/Desktop/PROJET MATH_INFO/exemples/text1.txt");
+        String a = Fichier.getContentFichier("/Users/nael/Desktop/CryptoAsymetrique/exemples/text1.txt");
         byte[] By = Fichier.stringToBytesArray(a);
         String s = new String(By);
         BigInteger mesg = new BigInteger(By);
@@ -30,7 +30,7 @@ public class Main {
         sig = sv.signature(msgChiffre.toByteArray(),keyPair.getPrivateKey(),keyPair.getPublicKey());
         System.out.println("Signature generée : " + sig);
 
-        sig = sig.add(new BigInteger("32"));
+        //sig = sig.add(new BigInteger("32"));
         
         b = sv.verification(msgChiffre.toByteArray(), sig, keyPair.getPublicKey());
         if(b){
